@@ -10,12 +10,34 @@
 
 
   <style>
-    @keyframes fade-in {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+/*email pop up*/
+  @keyframes slideFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
+.animate-slide-fade {
+  animation: slideFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+
+   @keyframes slideFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-slide-fade {
+  animation: slideFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
       .logo-taim {
@@ -66,7 +88,7 @@
   <div id="backdrop" class="absolute inset-0 bg-black bg-opacity-30"></div>
 
   <!-- Sidebar -->
-  <div id="mobileMenu" class="absolute top-0 left-0 h-full w-[90vw] bg-white shadow-lg p-6 transform -translate-x-full transition-transform duration-300 ease-in-out">
+  <div id="mobileMenu" class="absolute top-0 left-0 h-full w-[90vw] bg-white shadow-lg p-9 transform -translate-x-full transition-transform duration-300 ease-in-out">
     <div class="w-full max-w-[90%] flex flex-col items-start space-y-6 font-bold text-base">
       <button onclick="toggleMenu()" class="text-xl self-end mb-4">×</button>
       <a href="#" class="hover:text-gray-600 w-full">Home</a>
@@ -191,14 +213,20 @@
 
 
 <!-- Confirmation Popup -->
-<div id="confirmation" class="fixed inset-0 bg-black bg-opacity-40 hidden z-50 flex items-center justify-center">
-  <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm text-center space-y-5 animate-fade-in">
-    <i data-feather="check-circle" class="w-12 h-12 text-green-500 mx-auto"></i>
-    <h3 class="text-xl font-bold text-gray-800">Added to cart</h3>
-    <p class="text-gray-500 text-sm">Your product was successfully added to the cart.</p>
-    <div class="flex flex-col gap-3">
-      <a href="cart.html" class="bg-black text-white py-2 rounded hover:bg-gray-800 transition">Go to Cart</a>
-      <button onclick="closeConfirmation()" class="text-sm text-gray-600 hover:text-black">Keep Shopping</button>
+<div id="confirmation" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center relative animate-slide-fade">
+    <button onclick="closeConfirmation()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+    
+    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 text-green-500 w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+    
+    <h3 class="text-2xl font-bold mb-2 text-gray-800">Thank you!</h3>
+    <p class="text-gray-600 mb-6">Your product was successfully added to the cart.</p>
+    
+    <div class="flex justify-center gap-4">
+      <a href="cart.html" class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition font-semibold">Go to Cart</a>
+      <button onclick="closeConfirmation()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition font-semibold">Keep Shopping</button>
     </div>
   </div>
 </div>
@@ -235,16 +263,36 @@
     </div>
   </div>
 
-  <!-- EMAIL -->
-  <div>
-    <h4 class="font-bold mb-2">WE SEND TASTY EMAILS</h4>
+<!-- EMAIL -->
+<div>
+  <h4 class="font-bold mb-2">KEEP POSTED ABOUT OUR PERFUME NEWS & OFFERS</h4>
+  <form id="subscribeForm" onsubmit="handleSubscribe(event)" class="flex gap-2">
     <input 
       type="email" 
-      placeholder="Email address" 
-      class="border border-white p-2 w-full rounded text-black"
+      placeholder="Your email address" 
+      required
+      class="border border-white p-2 rounded text-black flex-grow"
     />
+    <button type="submit" class="bg-black text-white px-4 rounded hover:bg-gray-800 transition">Subscribe</button>
+  </form>
+</div>
+
+
+<!-- Email Subscription Confirmation Popup -->
+<div id="emailConfirmation" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center relative animate-slide-fade">
+    <button onclick="closeEmailConfirmation()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+    
+    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 text-blue-500 w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 4l-4-4-4 4" />
+    </svg>
+    
+    <h3 class="text-2xl font-bold mb-2 text-gray-800">Thank you for subscribing!</h3>
+    <p class="text-gray-600 mb-6">You’ll start receiving our best perfume offers and news.</p>
+    
+    <button onclick="closeEmailConfirmation()" class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition font-semibold">Close</button>
   </div>
-</footer>
+</div>
 
 
 
@@ -377,6 +425,20 @@ function filterProducts() {
 window.onbeforeunload = function () {
   window.scrollTo(0, 0);
 };
+function handleSubscribe(event) {
+  event.preventDefault();
+  // You can add actual subscription logic here (API call etc)
+  document.getElementById('subscribeForm').reset();
+  openEmailConfirmation();
+}
+
+function openEmailConfirmation() {
+  document.getElementById("emailConfirmation").classList.remove("hidden");
+}
+
+function closeEmailConfirmation() {
+  document.getElementById("emailConfirmation").classList.add("hidden");
+}
 
 </script>
 
