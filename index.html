@@ -10,6 +10,14 @@
 
 
   <style>
+    #musicToggle svg {
+  stroke: white;
+}
+
+#musicToggle:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
 /*email pop up*/
   @keyframes slideFadeIn {
   0% {
@@ -153,6 +161,12 @@
     </h2>
   </div>
 </section>
+<audio id="backgroundMusic" loop autoplay muted>
+  <source src="bcmusic.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+
 
 
 <!-- Product Section -->
@@ -254,10 +268,10 @@
       <a href="https://wa.me/your-number" target="_blank" aria-label="WhatsApp">
         <i data-feather="message-circle" class="hover:text-green-400"></i>
       </a>
-      <a href="https://www.instagram.com/parfums.de.taym/" target="_blank" aria-label="Instagram">
+      <a href="https://instagram.com/your-profile" target="_blank" aria-label="Instagram">
         <i data-feather="instagram" class="hover:text-pink-400"></i>
       </a>
-      <a href="https://www.facebook.com/profile.php?id=61564293605666&locale=fr_FR" target="_blank" aria-label="Facebook">
+      <a href="https://facebook.com/your-page" target="_blank" aria-label="Facebook">
         <i data-feather="facebook" class="hover:text-blue-400"></i>
       </a>
     </div>
@@ -294,11 +308,75 @@
   </div>
 </div>
 
+<!--music button-->
+<button id="musicToggle" aria-label="Toggle music" title="Pause music"
+  class="fixed bottom-6 right-6 bg-black bg-opacity-70 text-white px-4 py-2 rounded-full shadow-lg hover:bg-opacity-90 transition z-50 select-none">
+  Pause Music
+</button>
 
 
 
 <script>
   feather.replace();
+const music = document.getElementById('backgroundMusic');
+const toggleBtn = document.getElementById('musicToggle');
+
+function updateButton(isPlaying) {
+  if (isPlaying) {
+    toggleBtn.textContent = 'Pause Music';
+    toggleBtn.title = 'Pause music';
+  } else {
+    toggleBtn.textContent = 'Play Music';
+    toggleBtn.title = 'Play music';
+  }
+}
+
+// Check saved state from localStorage or default to play
+let isPlaying = localStorage.getItem('musicPlaying') === 'false' ? false : true;
+
+// Initialize audio based on saved state
+if (isPlaying) {
+  music.muted = false;
+  music.play().catch(() => {
+    // Autoplay might fail, wait for interaction
+  });
+} else {
+  music.pause();
+}
+
+// Set button text on load
+updateButton(isPlaying);
+
+// Toggle function for button
+toggleBtn.addEventListener('click', () => {
+  if (music.paused) {
+    music.muted = false;
+    music.play();
+    isPlaying = true;
+  } else {
+    music.pause();
+    isPlaying = false;
+  }
+  updateButton(isPlaying);
+  localStorage.setItem('musicPlaying', isPlaying);
+});
+
+// Unmute and play on first user interaction (if muted)
+function enableAudioOnInteraction() {
+  if (music.muted && !music.paused) {
+    music.muted = false;
+    updateButton(true);
+    localStorage.setItem('musicPlaying', true);
+  }
+  window.removeEventListener('click', enableAudioOnInteraction);
+  window.removeEventListener('keydown', enableAudioOnInteraction);
+}
+
+// Listen for first user interaction
+window.addEventListener('click', enableAudioOnInteraction);
+window.addEventListener('keydown', enableAudioOnInteraction);
+
+
 
 function toggleMenu() {
   const wrapper = document.getElementById("mobileMenuWrapper");
@@ -444,4 +522,4 @@ function closeEmailConfirmation() {
 
 
 </body>
-</html>
+</html> 
